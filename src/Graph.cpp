@@ -1,4 +1,4 @@
-#include "Graph.h"
+#include "../include/Graph.h"
 
 namespace Flanky {
 } // Flanky
