@@ -6,6 +6,12 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS_RELEASE "-Oz -DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-O0 -g")
 
-find_package(Qt6)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 
-add_executable(main main.cpp)
+add_executable(main main.cpp main-window.ui)
+
+target_link_libraries(main PUBLIC
+    Qt::Core
+    Qt::Gui
+    Qt::Widgets
+)
