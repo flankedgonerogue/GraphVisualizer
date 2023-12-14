@@ -1,0 +1,4 @@
+### cmake-debug+release .idea template
+/.idea/
+/cmake-build-debug/
+/cmake-build-release/
