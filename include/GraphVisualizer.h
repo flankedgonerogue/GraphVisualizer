@@ -21,6 +21,7 @@ public:
         setFlag(ItemIsSelectable);
 
         setPos(340, 200);
+        setZValue(0);
 
         setBrush(Qt::lightGray);
 

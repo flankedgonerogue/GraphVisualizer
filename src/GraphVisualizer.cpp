@@ -334,6 +334,8 @@ void GraphVisualizer::updateEdges()
             nodeItems[toNode]->pos().x() + 15, nodeItems[toNode]->pos().y() + 15
             );
 
+        lineItem->setZValue(-1);
+
         lineItem->setPen(QPen(Qt::black, 2));
 
         lineItems.insert(edge, lineItem);

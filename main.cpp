@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QWidget>
 
-// TODO MOVE LINE TO BACK
 
 int main(int argc, char** argv)
 {
