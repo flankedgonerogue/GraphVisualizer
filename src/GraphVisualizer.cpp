@@ -126,8 +126,6 @@ GraphVisualizer::GraphVisualizer(QWidget *parent) : QWidget(parent)
     layout->addWidget(view, 1, 0, 1, 4);
 
     setLayout(layout);
-
-    setWindowTitle("Graph Visualizer");
 }
 
 void GraphVisualizer::addNodeButtonClicked()

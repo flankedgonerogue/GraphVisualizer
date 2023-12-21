@@ -9,6 +9,7 @@ int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
     QMainWindow window;
+    window.setWindowTitle("Graph Visualizer");
     window.setFixedSize(800, 600);
 
     window.setCentralWidget(new GraphVisualizer(&window));
