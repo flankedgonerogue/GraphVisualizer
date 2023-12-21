@@ -1,16 +1,20 @@
+#include "include/GraphVisualizer.h"
+
 #include <QApplication>
-#include <iostream>
-#include "include/Graph.h"
-#include "ui_main-window.h"
+#include <QMainWindow>
+#include <QWidget>
+
+// TODO MOVE LINE TO BACK
 
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
-    QMainWindow main_window(nullptr);
-    Ui::MainWindow window;
-    window.setupUi(&main_window);
+    QMainWindow window;
+    window.setFixedSize(800, 600);
 
-    main_window.show();
+    window.setCentralWidget(new GraphVisualizer(&window));
+
+    window.show();
 
     return QApplication::exec();
 }
