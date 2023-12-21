@@ -8,10 +8,12 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O0 -g")
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 
+set(CMAKE_AUTOMOC ON)
+
 add_executable(main main.cpp
-        ui_main-window.h
-        src/Graph.cpp
-        include/Graph.h)
+        src/GraphVisualizer.cpp
+        include/GraphVisualizer.h
+)
 
 target_link_libraries(main PUBLIC
     Qt::Core
