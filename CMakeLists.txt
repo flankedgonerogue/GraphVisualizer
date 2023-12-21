@@ -8,7 +8,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O0 -g")
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 
-add_executable(main main.cpp main-window.ui
+add_executable(main main.cpp
+        ui_main-window.h
         src/Graph.cpp
         include/Graph.h)
 

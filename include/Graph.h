@@ -1,8 +1,8 @@
 #ifndef GRAPH_H
 #define GRAPH_H
+
 #include <list>
 #include <memory>
-#include <sstream>
 #include <string>
 
 namespace Flanky
@@ -53,80 +53,30 @@ public:
      * \param label Label used to search for the node
      * \return The node found otherwise a nullptr
      */
-    NodePtr findNode(Label label)
-    {
-        for (NodePtr& node : nodes)
-        {
-            if (node->label == label)
-            {
-                return node;
-            }
-        }
-
-        return nullptr;
-    }
+    NodePtr findNode(Label label);
 
     /**
-     * \brief Attemps to find an edge in the edges list
-     * \param node_1 Node the link is from
-     * \param node_2 Node the link is to
-     * \return Pointer to the weight of the node if found, otherwise a null pointer
-     */
-    EdgePtr findEdge(const NodePtr& node_1, const NodePtr& node_2)
-    {
-        for (auto& edge : edges)
-        {
-            if (std::get<0>(*edge) == node_1 && std::get<1>(*edge) == node_2)
-            {
-                return edge;
-            }
-        }
-
-        return nullptr;
-    }
+   * \brief Attemps to find an edge in the edges list
+   * \param node_1 Node the link is from
+   * \param node_2 Node the link is to
+   * \return Pointer to the weight of the node if found, otherwise a null pointer
+   */
+    EdgePtr findEdge(const NodePtr &node_1, const NodePtr &node_2);
 
     /**
      * \brief Finds all the edges starting from a node
      * \param label Label of node to find the edges of
+     * \param to Find edges to a node if true, otherwise from a node
      * \return Edges starting from that node
      */
-    EdgePtrList findEdgesForNode(Label label)
-    {
-        const auto node = findNode(label);
-        if (node == nullptr)
-        {
-            return {};
-        }
-
-        EdgePtrList found_edges;
-
-        for (auto& edge : edges)
-        {
-            if (std::get<0>(*edge) == node)
-            {
-                found_edges.emplace_back(edge);
-            }
-        }
-
-        return found_edges;
-    }
+    EdgePtrList findEdgesForNode(Label label, const bool &to = true);
 
     /**
      * \brief Attempts to insert a new node in the list if it is NOT already present
      * \param label Label for the new node to be inserted
      * \return True if the insertion was successful
      */
-    bool insertNode(Label label)
-    {
-        if (findNode(label) == nullptr)
-        {
-            nodes.push_back(std::make_shared<Node>(label));
-
-            return true;
-        }
-
-        return false;
-    }
+    bool insertNode(const std::string &label);
 
     /**
      * \brief Creates a edge from node A to B with a weight, if the edge already exists, updates it's weight
@@ -134,63 +84,36 @@ public:
      * \param label_2 Label of the node to create the link to
      * \param weight Weight of the edge
      */
-    bool insertEdge(Label label_1, Label label_2, const int& weight = 0)
+    bool insertEdge(Label label_1, Label label_2, const int &weight = 0);
+
+    /**
+     * \brief Removes a node if it's found in the nodes list
+     * \param label Label of node to be removed
+     * \return True if node has been removed successfully
+     */
+    bool removeNode(Label label);
+
+    /**
+     * \brief Returns a list of labels of nodes in the graph
+     * \return A list of labels of all nodes
+     */
+    [[nodiscard]] std::list<std::string_view> getNodes() const
     {
-        const auto node_1 = findNode(label_1);
-        if (node_1 == nullptr) return false;
+        std::list<std::string_view> _nodes;
 
-        const auto node_2 = findNode(label_2);
-        if (node_2 == nullptr) return false;
-
-        const EdgePtr edge = findEdge(node_1, node_2);
-
-        if (edge == nullptr)
+        for (const NodePtr& node : nodes)
         {
-            edges.push_back(std::make_shared<Edge>(node_1, node_2, weight));
-
-            return true;
+            _nodes.push_back(std::string_view(node->label));
         }
 
-        std::get<2>(*edge) = weight;
-
-        return true;
+        return _nodes;
     }
 
-    [[nodiscard]] std::string getNodesAsString() const
-    {
-        std::stringstream ss;
+    [[nodiscard]] std::string getNodesAsString() const;
 
-        for (const auto& node : nodes)
-        {
-            ss << node->label << '\n';
-        }
+    [[nodiscard]] std::string getEdgesAsString() const;
 
-        return ss.str();
-    }
-
-    [[nodiscard]] std::string getEdgesAsString() const
-    {
-        std::stringstream ss;
-
-        for (const auto& edge : edges)
-        {
-            ss << std::get<0>(*edge)->label << " -> " << std::get<1>(*edge)->label << " : " << std::get<2>(*edge) << '\n';
-        }
-
-        return ss.str();
-    }
-
-    [[nodiscard]] static std::string getEdgesAsStringFromEdges(const EdgePtrList& _edges)
-    {
-        std::stringstream ss;
-
-        for (const auto& edge : _edges)
-        {
-            ss << std::get<0>(*edge)->label << " -> " << std::get<1>(*edge)->label << " : " << std::get<2>(*edge) << '\n';
-        }
-
-        return ss.str();
-    }
+    [[nodiscard]] static std::string getEdgesAsStringFromEdges(const EdgePtrList &_edges);
 };
 } // namespace Flanky
 

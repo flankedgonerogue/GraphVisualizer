@@ -1,19 +1,16 @@
+#include <QApplication>
 #include <iostream>
 #include "include/Graph.h"
+#include "ui_main-window.h"
 
-int main()
+int main(int argc, char** argv)
 {
-    Flanky::Graph graph;
-    graph.insertNode("A");
-    graph.insertNode("B");
-    graph.insertNode("C");
-    graph.insertNode("D");
-    graph.insertEdge("A", "B", 1);
-    graph.insertEdge("B", "C", 3);
-    graph.insertEdge("B", "A", 4);
-    graph.insertEdge("B", "D", 9);
+    QApplication app(argc, argv);
+    QMainWindow main_window(nullptr);
+    Ui::MainWindow window;
+    window.setupUi(&main_window);
 
-    std::cout << graph.getNodesAsString() << Flanky::Graph::getEdgesAsStringFromEdges(graph.findEdgesForNode("B")) << std::flush;
+    main_window.show();
 
-    return 0;
+    return QApplication::exec();
 }

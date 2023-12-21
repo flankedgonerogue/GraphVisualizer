@@ -1,94 +1,136 @@
 #ifndef UI_MAIN_WINDOW
 #define UI_MAIN_WINDOW
 
-#include <QtWidgets/QApplication>
+#include <QtWidgets/QGraphicsView>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
 
 class Ui_MainWindow
 {
-public:
-    QWidget *centralwidget;
-    QVBoxLayout *verticalLayout;
-    QLabel *label;
-    QPushButton *pushButton;
+  public:
+    QMainWindow* mainWindow = nullptr;
+    QWidget* centralwidget = nullptr;
+    QWidget* horizontalLayoutWidget = nullptr;
+    QHBoxLayout* horizontalLayout = nullptr;
+    QLabel* node_label = nullptr;
+    QLineEdit* node_label_input = nullptr;
+    QPushButton* add_node_btn = nullptr;
+    QPushButton* delete_node_btn = nullptr;
+    QSpacerItem* horizontalSpacer = nullptr;
+    QLabel* density_label = nullptr;
+    QLabel* density_value = nullptr;
+    QGraphicsView* graphicsView = nullptr;
 
-    int counter = 0;
+    Flanky::Graph* graph = nullptr;
 
-    void setupUi(QMainWindow *MainWindow)
+    void setupUi(QMainWindow* MainWindow)
     {
+        mainWindow = MainWindow;
+
         if (MainWindow->objectName().isEmpty())
+        {
             MainWindow->setObjectName("MainWindow");
-
-        MainWindow->resize(800, 646);
-
-        QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
+        }
+        MainWindow->resize(600, 400);
+        MainWindow->setMinimumSize(QSize(600, 400));
 
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName("centralwidget");
-        centralwidget->setMinimumSize(QSize(400, 600));
-        centralwidget->setMaximumSize(QSize(16777214, 16777215));
-        centralwidget->setSizePolicy(sizePolicy);
 
-        // verticalLayoutWidget = new QWidget(centralwidget);
-        // verticalLayoutWidget->setObjectName("verticalLayoutWidget");
-        // verticalLayoutWidget->setGeometry(QRect(10, 10, 781, 631));
-        verticalLayout = new QVBoxLayout(centralwidget);
-        verticalLayout->setObjectName("verticalLayout");
-        verticalLayout->setSizeConstraint(QLayout::SetMaximumSize);
-        verticalLayout->setContentsMargins(5, 5, 5, 5);
+        horizontalLayoutWidget = new QWidget(centralwidget);
+        horizontalLayoutWidget->setObjectName("horizontalLayoutWidget");
+        horizontalLayoutWidget->setGeometry(QRect(10, 10, 581, 31));
 
-        QFont font;
-        font.setPointSize(14);
+        horizontalLayout = new QHBoxLayout(horizontalLayoutWidget);
+        horizontalLayout->setObjectName("horizontalLayout");
+        horizontalLayout->setContentsMargins(0, 0, 0, 0);
 
-        label = new QLabel(centralwidget);
-        label->setObjectName("label");
-        label->setSizePolicy(sizePolicy);
-        label->setMinimumSize(QSize(120, 50));
-        label->setFont(font);
-        label->setAlignment(Qt::AlignCenter);
+        node_label = new QLabel(horizontalLayoutWidget);
+        node_label->setObjectName("node_label");
+        horizontalLayout->addWidget(node_label);
 
-        verticalLayout->addWidget(label);
+        QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
 
-        pushButton = new QPushButton(centralwidget);
-        pushButton->setObjectName("pushButton");
-        sizePolicy.setHeightForWidth(pushButton->sizePolicy().hasHeightForWidth());
-        pushButton->setSizePolicy(sizePolicy);
+        node_label_input = new QLineEdit(horizontalLayoutWidget);
+        node_label_input->setObjectName("node_label_input");
+        node_label_input->setSizePolicy(sizePolicy);
+        node_label_input->setMinimumSize(QSize(150, 0));
+        sizePolicy.setHeightForWidth(node_label_input->sizePolicy().hasHeightForWidth());
+        horizontalLayout->addWidget(node_label_input);
 
-        verticalLayout->addWidget(pushButton);
+        add_node_btn = new QPushButton(horizontalLayoutWidget);
+        add_node_btn->setObjectName("add_node_btn");
+        horizontalLayout->addWidget(add_node_btn);
+
+        delete_node_btn = new QPushButton(horizontalLayoutWidget);
+        delete_node_btn->setObjectName("delete_node_btn");
+        horizontalLayout->addWidget(delete_node_btn);
+
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalLayout->addItem(horizontalSpacer);
+
+        density_label = new QLabel(horizontalLayoutWidget);
+        density_label->setObjectName("density_label");
+        horizontalLayout->addWidget(density_label);
+
+        density_value = new QLabel(horizontalLayoutWidget);
+        density_value->setObjectName("density_value");
+        density_value->setAlignment(Qt::AlignCenter);
+        horizontalLayout->addWidget(density_value);
+
+        graphicsView = new QGraphicsView(centralwidget);
+        graphicsView->setObjectName("graphicsView");
+        graphicsView->setGeometry(QRect(10, 50, 581, 341));
 
         MainWindow->setCentralWidget(centralwidget);
 
-        retranslateUi(MainWindow);
+        retranslateUi();
 
         QMetaObject::connectSlotsByName(MainWindow);
-        QObject::connect(pushButton, &QPushButton::clicked, [this]
-        {
-            counter++;
-            label->setText(QCoreApplication::translate("MainWindow", std::to_string(counter).c_str(), nullptr));
-        });
-
     } // setupUi
 
-    void retranslateUi(QMainWindow *MainWindow) const
+    void setupGraph()
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "Hello World Application", nullptr));
-        label->setText(QCoreApplication::translate("MainWindow", "Hello World", nullptr));
-        pushButton->setText(QCoreApplication::translate("MainWindow", "Increment Count", nullptr));
-    } // retranslateUi
+        graph = new Flanky::Graph;
+    } // setupGraph
 
+    void handleAddNodeBtnClick() const
+    {
+        const auto result = graph->insertNode(node_label_input->text().toStdString());
+        qDebug("Node Insertion Label: %s Result: %hhd", node_label_input->text().toStdString().c_str(), result);
+    } // handleAddNodeBtnClick
+
+    void handleDeleteNodeBtnClick() const
+    {
+        const auto result = graph->removeNode(node_label_input->text().toStdString());
+        qDebug("Node Deletion Label: %s Result: %hhd", node_label_input->text().toStdString().c_str(), result);
+    } // handleDeleteNodeBtnClick
+
+    void retranslateUi() const
+    {
+        mainWindow->setWindowTitle(QObject::tr("Graph Visualizer"));
+        node_label->setText(QObject::tr("Node Label"));
+        add_node_btn->setText(QObject::tr("Add"));
+        delete_node_btn->setText(QObject::tr("Delete"));
+        density_label->setText(QObject::tr("Density:"));
+        density_value->setText(QObject::tr("100%"));
+    } // retranslateUi
 };
 
-namespace Ui {
-    class MainWindow: public Ui_MainWindow {};
+namespace Ui
+{
+class MainWindow : public Ui_MainWindow
+{
+};
 } // namespace Ui
 
 QT_END_NAMESPACE
